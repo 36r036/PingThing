@@ -3,15 +3,22 @@ using System.Threading;
 
 namespace New_folder
 {
-    public class Spinner : IDisposable
+    public interface ISpinner
+    {
+        void Start();
+        void Stop();
+    }
+    public class Spinner : ISpinner, IDisposable
     {
      private const string Sequence = @"............";
-     private readonly int delay;
+        private readonly IWriter _writer;
+        private readonly int delay;
      private bool running;
      private readonly Thread thread;
 
-     public Spinner()
+     public Spinner(IWriter writer)
      {
+         _writer = writer;
         this.delay = 100;
         thread = new Thread(Load);
      }
@@ -41,10 +48,7 @@ namespace New_folder
         }
      }
 
-     private void Draw(char c)
-     {
-        Console.Write(c);
-     }
+     
 
      private void Clear(int length)
      {
@@ -57,11 +61,12 @@ namespace New_folder
     
      private void WriteChars(string seq)
      {
-        for(int i = 0; i < seq.Length; i ++)
-        {
-            Draw(seq[i]);
-            Thread.Sleep(delay);
-        }
+         _writer.WriteChars(seq);
+        // for(int i = 0; i < seq.Length; i ++)
+        // {
+        //     _writer.Draw(seq[i]);
+        //     Thread.Sleep(delay);
+        // }
      }
 
      public void Dispose()

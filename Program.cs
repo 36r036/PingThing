@@ -1,24 +1,29 @@
 ﻿using System;
 using System.Threading;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace New_folder
 {
-    class Program
+    public class Program
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            var serviceProvider = new ServiceCollection()
+                .AddSingleton<IWriter, Writer>()
+                .AddSingleton<ISpinner, Spinner>()
+                .BuildServiceProvider();
 
+            var spinner = serviceProvider.GetRequiredService<ISpinner>();
+            
             Console.ForegroundColor = ConsoleColor.Green;
-            var spinner = new Spinner();
+            Console.WriteLine("Hello World!");
 
             spinner.Start();
             
             Thread.Sleep(10000);
-
             spinner.Stop();
             Console.ForegroundColor = ConsoleColor.White;
-        }     
+        } 
 
         
         
